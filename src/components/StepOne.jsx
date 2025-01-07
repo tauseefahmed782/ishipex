@@ -67,53 +67,6 @@ const StepOne = ({nextStep}) => {
                         placeholder="Enter Location"  ref={inputRef} />
                 </div>
 {/* testing */}
-<div className="input-area" style={{ position: "relative" }}>
-      <label htmlFor="pickup-location">Enter Pickup Location</label>
-      <input
-        type="text"
-        name="pickup-location"
-        className="form-control bg-transparent border-0 ps-0"
-        placeholder="Enter Location"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        style={{ zIndex: 2, position: "relative" }}
-      />
-
-      {/* Suggestions Dropdown */}
-      {suggestions.length > 0 && (
-        <ul
-          style={{
-            listStyle: "none",
-            padding: 0,
-            margin: "0.5rem 0 0",
-            position: "absolute",
-            background: "white",
-            border: "1px solid #ddd",
-            borderRadius: "4px",
-            overflowY: "auto",
-            width: "100%",
-            zIndex: 3,
-          }}
-        >
-          {suggestions.map((suggestion) => (
-            <li
-              key={suggestion.place_id}
-              style={{
-                padding: "0.5rem",
-                cursor: "pointer",
-                borderBottom: "1px solid #eee",
-              }}
-              onClick={() => {
-                setInputValue(suggestion.description);
-                setSuggestions([]);
-              }}
-            >
-             tes {suggestion.description}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
                 <div className="search-icon">
                     <span><svg width="40px" height="40px" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
