@@ -4,11 +4,11 @@ import van from '../assets/images/delivery-van.png'
 import box from '../assets/images/box.png'
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import DeliveryTime from './DeliveryTime';
 
 const StepTwo = ({prevStep}) => {
     const [mobilePhone, setMobilePhone] = useState(''); // State for the second input
     const [selectedVehicle, setSelectedVehicle] = useState(""); // State to track selected vehicle
-    const [selectedOption, setSelectedOption] = useState(""); // State for this section
     const [showTextField, setShowTextField] = useState(false);
      const handleSelectChange = (event) => {
             if (event.target.value === "Other") {
@@ -17,9 +17,7 @@ const StepTwo = ({prevStep}) => {
                 setShowTextField(false);
             }
         };
-        const handleOptionChange = (option) => {
-            setSelectedOption(option); // Update selected option
-        };
+       
         const handleSelect = (vehicle) => {
             setSelectedVehicle(vehicle); // Update the selected vehicle
         };
@@ -176,133 +174,10 @@ const StepTwo = ({prevStep}) => {
 
         <div className="step-4 mt-4 pt-3">
             <label className="label-md">When do you want your package to be delivered?</label>
-            <div className="row mt-3">
-                <div className="col-md-3">
-                    <div className="package-delivery-box">
-                        <label
-                            className={`position-relative ${selectedOption === "same-day" ? "active" : ""
-                                }`}
-                            htmlFor="same-day"
-                        >
-                            <div className="package-icon">
-                                <div>
-                                    <b className="d-block">Same Day</b>
-                                    <span className="text-muted">AED 36</span>
-                                </div>
-                            </div>
-                            <span className="position-absolute package-check">
-                                <svg
-                                    width="20px"
-                                    height="20px"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        d="M4 12.6111L8.92308 17.5L20 6.5"
-                                        stroke="#fff"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    ></path>
-                                </svg>
-                            </span>
-                            <input
-                                type="radio"
-                                id="same-day"
-                                name="delivery-options"
-                                onChange={() => handleOptionChange("same-day")}
-                                checked={selectedOption === "same-day"}
-                            />
-                        </label>
-                    </div>
-                </div>
-
-                <div className="col-md-3">
-                    <div className="package-delivery-box">
-                        <label
-                            className={`position-relative ${selectedOption === "60-minutes" ? "active" : ""
-                                }`}
-                            htmlFor="60-minutes"
-                        >
-                            <div className="package-icon">
-                                <div>
-                                    <b className="d-block">60 Minutes</b>
-                                    <span className="text-muted">AED 36</span>
-                                </div>
-                            </div>
-                            <span className="position-absolute package-check">
-                                <svg
-                                    width="20px"
-                                    height="20px"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        d="M4 12.6111L8.92308 17.5L20 6.5"
-                                        stroke="#fff"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    ></path>
-                                </svg>
-                            </span>
-                            <input
-                                type="radio"
-                                id="60-minutes"
-                                name="delivery-options"
-                                onChange={() => handleOptionChange("60-minutes")}
-                                checked={selectedOption === "60-minutes"}
-                            />
-                        </label>
-                    </div>
-                </div>
-
-                <div className="col-md-3">
-                    <div className="package-delivery-box">
-                        <label
-                            className={`position-relative ${selectedOption === "next-day" ? "active" : ""
-                                }`}
-                            htmlFor="next-day"
-                        >
-                            <div className="package-icon">
-                                <div>
-                                    <b className="d-block">Next Day</b>
-                                    <span className="text-muted">AED 36</span>
-                                </div>
-                            </div>
-                            <span className="position-absolute package-check">
-                                <svg
-                                    width="20px"
-                                    height="20px"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        d="M4 12.6111L8.92308 17.5L20 6.5"
-                                        stroke="#fff"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    ></path>
-                                </svg>
-                            </span>
-                            <input
-                                type="radio"
-                                id="next-day"
-                                name="delivery-options"
-                                onChange={() => handleOptionChange("next-day")}
-                                checked={selectedOption === "next-day"}
-                            />
-                        </label>
-                    </div>
-                </div>
-            </div>
+          <DeliveryTime/>
         </div>
 
-        <div className="step-5 mt-4 pt-3">
+        <div className="step-5  pt-3">
             <label className="">Mobile Number</label>
             <div className="row">
                 <div className="col-md-6">
