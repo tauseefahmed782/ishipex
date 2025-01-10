@@ -6,21 +6,27 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import DeliveryTime from './DeliveryTime';
 
-const StepTwo = ({prevStep}) => {
+const StepTwo = ({ prevStep, setFormData, formData, handleSubmit, handleVehicalForm}) => {
     const [mobilePhone, setMobilePhone] = useState(''); // State for the second input
     const [selectedVehicle, setSelectedVehicle] = useState(""); // State to track selected vehicle
     const [showTextField, setShowTextField] = useState(false);
+     const [customerPhone, setCustomerPhone] = useState(''); 
+
      const handleSelectChange = (event) => {
             if (event.target.value === "Other") {
                 setShowTextField(true);
             } else {
+                
                 setShowTextField(false);
+                handleVehicalForm(event);
             }
         };
        
         const handleSelect = (vehicle) => {
             setSelectedVehicle(vehicle); // Update the selected vehicle
         };
+
+          
   return (
     <div>
     <div className="all-step-2-to-5 ">
@@ -28,7 +34,7 @@ const StepTwo = ({prevStep}) => {
             <label className="label-md">What’s inside your package?</label>
             <div className="row mt-3">
                 <div className="col-md-5 col-12">
-                    <select className="form-select" aria-label="inside Your Package" onChange={handleSelectChange}>
+                    <select className="form-select" aria-label="inside Your Package" name="packageType" onChange={handleSelectChange}>
                         <option selected>Please select the item type</option>
                         <option value="Documents">Documents</option>
                         <option value="Documents – Embassy Pickup">Documents – Embassy Pickup
@@ -44,6 +50,8 @@ const StepTwo = ({prevStep}) => {
                             type="text"
                             className="form-control border-0 border-bottom ps-0 border-radious-0"
                             placeholder="Please specify the item type"
+                            name="packageType"
+                            onChange={handleVehicalForm}
                         />
                     )}
                 </div>
@@ -102,7 +110,8 @@ const StepTwo = ({prevStep}) => {
                                 type="radio"
                                 id="bike"
                                 name="vehicle"
-                                onChange={() => handleSelect("bike")}
+                                value="bike"
+                                onChange={handleVehicalForm}
                                 checked={selectedVehicle === "bike"}
                             />
 
@@ -123,7 +132,7 @@ const StepTwo = ({prevStep}) => {
                                 type="radio"
                                 id="bike"
                                 name="vehicle"
-                                onChange={() => handleSelect("bike")}
+                                onChange={handleVehicalForm}
                                 checked={selectedVehicle === "bike"}
                             />
                         </label>
@@ -162,7 +171,8 @@ const StepTwo = ({prevStep}) => {
                                 type="radio"
                                 id="van"
                                 name="vehicle"
-                                onChange={() => handleSelect("van")}
+                                value="van"
+                                onChange={handleVehicalForm}
                                 checked={selectedVehicle === "van"}
                             />
                         </label>
@@ -185,7 +195,18 @@ const StepTwo = ({prevStep}) => {
                         <PhoneInput
                             country={'ae'}
                             value={mobilePhone} // Use the same state
-                            onChange={(value) => setMobilePhone(value)} // Update shared state
+                            // onChange={(value) => setMobilePhone(value)} // Update shared state
+                            onChange={(value, countryData) => {
+                                setCustomerPhone(value); // Update the local state
+                            
+                                // Simulate an event object to pass to handleChangeForm
+                                handleVehicalForm({
+                                  target: {
+                                    name: 'CustomerPhone', // The name of the input field
+                                    value: value, // The phone number
+                                  },
+                                });
+                              }}
                             inputStyle={{
                                 width: '100%',
                             }}
@@ -200,9 +221,10 @@ const StepTwo = ({prevStep}) => {
         <button type="button" onClick={prevStep} className="btn btn-previous me-2">
             Previous
         </button>
-        <button type="submit" className="btn btn-payment">
+        <button type="submit" className="btn btn-payment"  onClick={handleSubmit}>
             Proceesed To Payment
         </button>
+       
     </div>
 </div>
   )
