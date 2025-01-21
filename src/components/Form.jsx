@@ -1,50 +1,52 @@
 import React, { useState } from 'react';
 import StepOne from './StepOne';
 import StepTwo from './StepTwo';
+import PaymentModal from './PaymentModal';
 
 const Form = () => {
     const [currentStep, setCurrentStep] = useState(1);
     const [inputs, setInputs] = useState({});
-    const [dropinputs, setDropInputs] = useState({});
-    const [vehicalinputs, setVehicalInputs] = useState({});
-    const [showModal, setShowModal] = useState(false); // State to control modal visibility
+    const [dropInputs, setDropInputs] = useState({});
+    const [vehicleInputs, setVehicleInputs] = useState({});
+    const [showModal, setShowModal] = useState(false);
 
-    
-    
-    
+    // Handles input changes for Pickup Details
     const handlePickUpForm = (event) => {
         const { name, value } = event.target;
-        setInputs((values) => ({ ...values, [name]: value }));
-        // console.log("inputs ++++++++++++++",{inputs});
+        setInputs((prev) => ({ ...prev, [name]: value }));
     };
 
+    // Handles input changes for Drop-off Details
     const handleDropOffForm = (event) => {
         const { name, value } = event.target;
-        setDropInputs((values) => ({ ...values, [name]: value }));
-        // console.log("dropinputs ++++++++++++++",{dropinputs});
+        setDropInputs((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleVehicalForm = (event) => {
+    // Handles input changes for Vehicle Details
+    const handleVehicleForm = (event) => {
         const { name, value } = event.target;
-        setVehicalInputs((values) => ({ ...values, [name]: value }));
-        // console.log("vehicalinputs ++++++++++++++",{vehicalinputs});
+        setVehicleInputs((prev) => ({ ...prev, [name]: value }));
     };
 
+    // Move to the next step and save current inputs in localStorage
     const nextStep = () => {
         saveToLocalStorage();
         setCurrentStep((prevStep) => prevStep + 1);
     };
 
+    // Save pickup and drop-off inputs to localStorage
     const saveToLocalStorage = () => {
         localStorage.setItem('pickupInputs', JSON.stringify(inputs));
-        localStorage.setItem('dropInputs', JSON.stringify(dropinputs));
-        console.log('Inputs saved to localStorage:', inputs, dropinputs);
+        localStorage.setItem('dropInputs', JSON.stringify(dropInputs));
+        console.log('Inputs saved to localStorage:', inputs, dropInputs);
     };
 
+    // Move to the previous step
     const prevStep = () => {
         setCurrentStep((prevStep) => prevStep - 1);
     };
 
+    // Final data object to be submitted
     const finalData = {
         uid: '14',
         p_method_id: '2',
@@ -61,26 +63,26 @@ const Form = () => {
         subtotal: 10,
         ParcelData: [
             {
-                drop_address: dropinputs.drop_location,
-                drop_lat: dropinputs.drop_Lat,
-                drop_lng: dropinputs.drop_Lng,
-                drop_name: dropinputs.drop_name,
-                drop_mobile: dropinputs.drop_mobile,
+                drop_address: dropInputs.drop_location,
+                drop_lat: dropInputs.drop_Lat,
+                drop_lng: dropInputs.drop_Lng,
+                drop_name: dropInputs.drop_name,
+                drop_mobile: dropInputs.drop_mobile,
             },
         ],
     };
 
-    const handleConfirm = async () => {
-        setShowModal(false); // Hide modal after confirmation
-        console.log('Submitted Data:', JSON.stringify(finalData, null, 2));
-        
+    // Handles the final confirmation action in the modal
+    const handleConfirm = () => {
+        setShowModal(false);
+        console.log('Final data for confirmation:', finalData);
     };
 
-
+    // Handles the form submission to the API
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        console.log('Submitted Data:', JSON.stringify(finalData, null, 2));
+        console.log('Submitting data:', finalData);
+
         try {
             const response = await fetch('https://admin.beingmotherstore.com/parc_api/order_now.php', {
                 method: 'POST',
@@ -94,13 +96,13 @@ const Form = () => {
 
             if (response.ok) {
                 alert('Order submitted successfully!');
-                console.log('Server Response:', result);
+                console.log('Server response:', result);
             } else {
                 alert(`Failed to submit order: ${result.message || 'Unknown error'}`);
             }
         } catch (error) {
             console.error('Error submitting form:', error);
-            alert('An error occurred. Please try again later.');
+            alert('An error occurred. Please try again.');
         }
     };
 
@@ -109,7 +111,7 @@ const Form = () => {
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
-                    setShowModal(true); // Show modal on form submission
+                    setShowModal(true); // Show modal before final submission
                 }}
             >
                 {currentStep === 1 && (
@@ -122,78 +124,19 @@ const Form = () => {
                 {currentStep === 2 && (
                     <StepTwo
                         prevStep={prevStep}
-                        handleSubmit={handleConfirm}
-                        handleVehicalForm={handleVehicalForm}
+                        handleVehicleForm={handleVehicleForm}
+                        handleConfirm={handleConfirm}
                     />
                 )}
             </form>
 
-            {/* Modal for order confirmation */}
-            {showModal && (
-                <div
-                className="modal fade show"
-                style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}
-            >
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title">Order Confirmation</h5>
-                            <button
-                                type="button"
-                                className="btn-close"
-                                onClick={() => setShowModal(false)}
-                            ></button>
-                        </div>
-                        <div className="modal-body">
-                            <h6>Order Summary</h6>
-                            <div className="mb-3">
-                                <h5>Pickup Details</h5>
-                                <p><strong>Address:</strong> {finalData.pick_address || 'N/A'}</p>
-                                <p><strong>Latitude:</strong> {finalData.pick_lat || 'N/A'}</p>
-                                <p><strong>Longitude:</strong> {finalData.pick_lng || 'N/A'}</p>
-                            </div>
-                            <div className="mb-3">
-                                <h5>Drop-off Details</h5>
-                                {finalData.ParcelData.map((parcel, index) => (
-                                    <div key={index} className="mb-2">
-                                        <p><strong>Address:</strong> {parcel.drop_address || 'N/A'}</p>
-                                        <p><strong>Latitude:</strong> {parcel.drop_lat || 'N/A'}</p>
-                                        <p><strong>Longitude:</strong> {parcel.drop_lng || 'N/A'}</p>
-                                        <p><strong>Recipient Name:</strong> {parcel.drop_name || 'N/A'}</p>
-                                        <p><strong>Recipient Mobile:</strong> {parcel.drop_mobile || 'N/A'}</p>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="mb-3">
-                                <h5>Other Details</h5>
-                                <p><strong>Vehicle ID:</strong> {finalData.vehicleid || 'N/A'}</p>
-                                <p><strong>Payment Method ID:</strong> {finalData.p_method_id || 'N/A'}</p>
-                                <p><strong>Total:</strong> ₹{finalData.o_total || 'N/A'}</p>
-                                <p><strong>Subtotal:</strong> ₹{finalData.subtotal || 'N/A'}</p>
-                            </div>
-                        </div>
-                        <div className="modal-footer">
-                            <button
-                                type="button"
-                                className="btn btn-secondary"
-                                onClick={() => setShowModal(false)}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={handleSubmit}
-                                handlePickUpForm={handlePickUpForm}
-                            >
-                                Confirm Order
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            )}
+            {/* Payment Modal */}
+            <PaymentModal
+                show={showModal}
+                onClose={() => setShowModal(false)}
+                handleSubmit={handleSubmit}
+                finalData={finalData}
+            />
         </div>
     );
 };

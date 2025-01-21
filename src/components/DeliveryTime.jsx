@@ -171,7 +171,7 @@ const DeliveryTime = () => {
       </div>
 
       {/* Delivery Date and Time Section */}
-      <div className="row step-6 mb-2 pb-3 mt-4">
+      {/* <div className="row step-6 mb-2 pb-3 mt-4">
         <div className="col-md-11 mb-2">
           <label className="label-md">Delivery Date And Time</label>
         </div>
@@ -197,7 +197,7 @@ const DeliveryTime = () => {
             </h5>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import box from '../assets/images/box.png'
 import headerImg from '../assets/images/rb_6333.png'
 import bike from '../assets/images/delivery-bike.png'
 import van from '../assets/images/delivery-van.png'
 import Form from '../components/Form'
+import PaymentModal from '../components/PaymentModal'
 
 export const Book = () => {
+    const [isModalOpen, setModalOpen] = useState(false);
+  const [formData, setFormData] = useState({}); 
   return (
     <div>
           {/* <!--Start Book Intro--> */}
@@ -35,7 +38,7 @@ export const Book = () => {
                     <div className="col-md-8">
                         <div>
                             <h2>Send Packages in Dubai, Abu Dhabi, Sharjah, Ajman, Al Ain & Ras Al-Khaimah</h2>
-<Form/>
+<Form  setModalOpen={setModalOpen} setFormData={setFormData}  />
                         
                         </div>
                     </div>
@@ -79,6 +82,12 @@ export const Book = () => {
             </div>
         </div>
     </div>
+    {isModalOpen && (
+        <PaymentModal
+       
+          onClose={() => setModalOpen(false)}
+        />
+      )}
     </div>
   )
 }

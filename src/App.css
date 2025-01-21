@@ -69,7 +69,7 @@ P{
   font-weight: 300;
 }
 
-.jkit-button-wrapper , .btn-payment , .btn-previous {
+.jkit-button-wrapper , .btn-payment , .btn-previous , .btn-confirm {
   font-family: "Inter Tight", sans-serif;
   padding: 15px 20px 15px 20px;
   border-radius: 10px 10px 10px 10px;
@@ -83,15 +83,42 @@ P{
   text-decoration: none;
   text-transform: uppercase;
 }
-.jkit-button-wrapper:hover , .btn-payment:hover{
+.jkit-button-wrapper:hover , .btn-payment:hover , .btn-confirm:hover{
 background-color: #002496;
 color: #fff;
 }
-.btn-previous{
+.btn-confirm{
+  width: 150px;
+}
+.btn-close {
+ color: #fff!important;
+  border-color: #fff;
+  font-size: 50px;
+  background-color: transparent;
+  --bs-btn-close-bg:none!important;
+  display: flex;
+  align-items: center;
+  transform: rotate(45deg);
+}
+.btn-previous , .btn-cancel{
   border: 1px solid #002496!important;
   background-color: transparent;
+  color: #002496;
   width: 150px;
   
+}
+.btn_login{
+  background-color: #002496;
+  color: #fff;
+  border: 1px solid #002496;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+.btn_login:hover{
+  background-color: transparent;
+  color: #002496;
+  border: 1px solid #002496;
+
 }
 .bg-blue {
   background-color: var(--blue-color);
@@ -374,4 +401,21 @@ color: #fff;
 
 .input-area ul li:hover {
   background: #f5f5f5;
+}
+
+.modal-dialog{
+  max-width: 800px;
+  box-shadow: 0 5px 30px 0 rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-radius: 0.5rem;
+  border: none!important;
+  font-family: "DM Sans", serif;
+
+}
+.modal-content{
+  border: none;
+}
+.modal-header {
+  background-color: #002496;
+  color: #fff;
 }

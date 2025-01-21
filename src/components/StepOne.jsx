@@ -1,22 +1,28 @@
-import React, { useState , useEffect, useRef} from 'react'
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
-const StepOne = ({nextStep, handlePickUpForm, handleDropOffForm}) => {
-     const [primaryPhone, setPrimaryPhone] = useState(''); 
-     const [secondaryPhone, setSecondaryPhone] = useState(''); 
-  
-    //  testing
-    const [inputValue, setInputValue] = useState("");
-    const [suggestions, setSuggestions] = useState([]);
+import React, { useState, useEffect, useRef } from "react";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import Login from "./Login"; // Import your Login component
+import StepTwo from "./StepTwo"; // Import your StepTwo component
 
+const StepOne = ({ nextStep, handlePickUpForm, handleDropOffForm }) => {
+  const [primaryPhone, setPrimaryPhone] = useState("");
+  const [secondaryPhone, setSecondaryPhone] = useState("");
+  const [inputValue, setInputValue] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login status
+  const [showLogin, setShowLogin] = useState(false); // Control login page visibility
+  const [goToStepTwo, setGoToStepTwo] = useState(false); // Control StepTwo visibility
+  const [loginError, setLoginError] = useState(""); // Error message for login
 
+  const inputRef = useRef();
+  const inputDropoff = useRef();
+
+  // Fetch suggestions for location input
   const fetchSuggestions = async (query) => {
     if (!query) {
       setSuggestions([]);
       return;
     }
-
- 
 
     const service = new window.google.maps.places.AutocompleteService();
     service.getPlacePredictions({ input: query }, (predictions, status) => {
@@ -29,74 +35,73 @@ const StepOne = ({nextStep, handlePickUpForm, handleDropOffForm}) => {
   useEffect(() => {
     const timeoutId = setTimeout(() => fetchSuggestions(inputValue), 300); // Debounce
     return () => clearTimeout(timeoutId); // Clear timeout on input change
+  }, [inputValue]);
+
+  useEffect(() => {
+    const autocomplete = new window.google.maps.places.Autocomplete(inputRef.current, {
+      types: ["geocode"],
+    });
+
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      const lat = place.geometry?.location?.lat();
+      const lng = place.geometry?.location?.lng();
+      const address = place.formatted_address;
+
+      handlePickUpForm({ target: { name: "pick_location", value: address } });
+      handlePickUpForm({ target: { name: "pick_Lat", value: lat } });
+      handlePickUpForm({ target: { name: "pick_Lng", value: lng } });
+    });
+
+    const autocompleteDropOff = new window.google.maps.places.Autocomplete(inputDropoff.current, {
+      types: ["geocode"],
+    });
+
+    autocompleteDropOff.addListener("place_changed", () => {
+      const placeDrop = autocompleteDropOff.getPlace();
+      const latDrop = placeDrop.geometry?.location?.lat();
+      const lngDrop = placeDrop.geometry?.location?.lng();
+      const addressDrop = placeDrop.formatted_address;
+
+      handleDropOffForm({ target: { name: "drop_location", value: addressDrop } });
+      handleDropOffForm({ target: { name: "drop_Lat", value: latDrop } });
+      handleDropOffForm({ target: { name: "drop_Lng", value: lngDrop } });
+    });
+  }, []);
+
+  // Handle "Continue" button click
+  const handleContinue = () => {
+    if (!isLoggedIn) {
+      setShowLogin(true);
+    } else {
+      setGoToStepTwo(true);
+    }
+  };
+
+  // Handle successful login
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+    setShowLogin(false);
+    setGoToStepTwo(true);
+  };
+
+  // Handle failed login
+  const handleLoginFailure = (errorMessage) => {
+    setLoginError(errorMessage);
+  };
+
+  if (showLogin) {
+    return (
+      <Login
+        onLoginSuccess={handleLoginSuccess}
+        onLoginFailure={handleLoginFailure}
+      />
+    );
   }
-  , [inputValue]);
-     const inputRef = useRef();
-     const inputDropoff = useRef();
-    
 
-      
-     useEffect(() => {
-        const autocomplete = new window.google.maps.places.Autocomplete(inputRef.current, {
-          types: ["geocode"], // Restrict search to geographical locations
-        });
-    
-        autocomplete.addListener("place_changed", () => {
-          const place = autocomplete.getPlace();
-          console.log("Selected place:", place);
-
-          
-
-          // Extract Latitude and Longitude
-          const lat = place.geometry?.location?.lat();
-          const lng = place.geometry?.location?.lng();
-    
-          // Extract Address
-          const address = place.formatted_address;
-    
-          console.log("Selected place (Pickup):", {
-            lat,
-            lng,
-            address,
-          });
-
-           // Update the `inputs` state via `handleChangeForm`
-            handlePickUpForm({ target: { name: "pick_location", value: address } });
-            handlePickUpForm({ target: { name: "pick_Lat", value: lat } });
-            handlePickUpForm({ target: { name: "pick_Lng", value: lng } });
-
-
-        });
-
-        const autocompleteDropOff = new window.google.maps.places.Autocomplete(inputDropoff.current, {
-          types: ["geocode"], // Restrict search to geographical locations
-        });
-    
-        autocompleteDropOff.addListener("place_changed", () => {
-          const placeDrop = autocompleteDropOff.getPlace();
-          console.log("Selected place:", placeDrop);
-
-
-          // Extract Latitude and Longitude
-          const latDrop = placeDrop.geometry?.location?.lat();
-          const lngDrop = placeDrop.geometry?.location?.lng();
-    
-          // Extract Address
-          const addressDrop = placeDrop.formatted_address;
-    
-          console.log("Selected place (Dropoff):", {
-            lat: latDrop,
-            lng: lngDrop,
-            address: addressDrop,
-          });
-
-           // Update the `inputs` state via `handleChangeForm`
-            handleDropOffForm({ target: { name: "drop_location", value: addressDrop } });
-            handleDropOffForm({ target: { name: "drop_Lat", value: latDrop } });
-            handleDropOffForm({ target: { name: "drop_Lng", value: lngDrop } });
-
-        });
-      }, []);
+  if (goToStepTwo) {
+    return <StepTwo />;
+  }
     return (
         <div>
             <div
@@ -304,27 +309,7 @@ const StepOne = ({nextStep, handlePickUpForm, handleDropOffForm}) => {
                     </div>
                 </div>
 
-                <div className="row step-6 mb-2 pb-3 px-0 mx-0" id="">
-                    <div className="col-md-11 mb-2"><label className="font-14">Available Delivery time slot based on pickup date</label></div>
-
-                    <div className="col-md-11">
-                        <div className="d-flex align-items-center">
-                            <h5 className="font-18 mb-0">Thu 5th Dec, 9 AM - 6 PM</h5>
-                            <div className="ms-1">
-                                <button type="button" className="btn" style={{ marginTop: '-4px' }}><svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M21.2799 6.40005L11.7399 15.94C10.7899 16.89 7.96987 17.33 7.33987 16.7C6.70987 16.07 7.13987 13.25 8.08987 12.3L17.6399 2.75002C17.8754 2.49308 18.1605 2.28654 18.4781 2.14284C18.7956 1.99914 19.139 1.92124 19.4875 1.9139C19.8359 1.90657 20.1823 1.96991 20.5056 2.10012C20.8289 2.23033 21.1225 2.42473 21.3686 2.67153C21.6147 2.91833 21.8083 3.21243 21.9376 3.53609C22.0669 3.85976 22.1294 4.20626 22.1211 4.55471C22.1128 4.90316 22.0339 5.24635 21.8894 5.5635C21.7448 5.88065 21.5375 6.16524 21.2799 6.40005V6.40005Z" stroke="#0073CF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M11 4H6C4.93913 4 3.92178 4.42142 3.17163 5.17157C2.42149 5.92172 2 6.93913 2 8V18C2 19.0609 2.42149 20.0783 3.17163 20.8284C3.92178 21.5786 4.93913 22 6 22H17C19.21 22 20 20.2 20 18V13" stroke="#0073CF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-3 d-none" id="updated-date">
-                        <input type="date" className="form-control" onChange={handleDropOffForm} name="dropdate" />
-                    </div>
-                    <div className="col-md-3 d-none" id="updated-time">
-                        <select className="form-select" onChange={handleDropOffForm}   name="droptime" aria-label="Default select example">
-                            <option value="12 PM - 5 PM">12 PM - 5 PM</option>
-                            <option value="5 PM - 8 PM">5 PM - 8 PM</option>
-                        </select>
-                    </div>
-                </div>
+              
 
                 <div className="row step-6 mb-3 pb-3 px-0 mx-0">
                     <h6>Whom to contact at the time of Drop-off?</h6>
@@ -384,11 +369,11 @@ const StepOne = ({nextStep, handlePickUpForm, handleDropOffForm}) => {
                     href="/privacy-policy/" target="_blank">Privacy</a></h6>
 
 
-            <button type="button" onClick={nextStep} className="jkit-button-wrapper d-block mt-4">
+            <button type="button" onClick={handleContinue} className="jkit-button-wrapper d-block mt-4">
                 Continue
             </button>
         </div>
     )
 }
 
-export default StepOne
+export default StepOne 
