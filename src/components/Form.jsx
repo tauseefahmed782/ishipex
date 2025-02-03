@@ -119,6 +119,7 @@ const Form = () => {
                         nextStep={nextStep}
                         handlePickUpForm={handlePickUpForm}
                         handleDropOffForm={handleDropOffForm}
+                        
                     />
                 )}
                 {currentStep === 2 && (
@@ -126,6 +127,7 @@ const Form = () => {
                         prevStep={prevStep}
                         handleVehicleForm={handleVehicleForm}
                         handleConfirm={handleConfirm}
+                        
                     />
                 )}
             </form>

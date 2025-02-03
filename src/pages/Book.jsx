@@ -5,12 +5,15 @@ import bike from '../assets/images/delivery-bike.png'
 import van from '../assets/images/delivery-van.png'
 import Form from '../components/Form'
 import PaymentModal from '../components/PaymentModal'
+import Header from '../components/Header'
 
 export const Book = () => {
     const [isModalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState({}); 
   return (
     <div>
+            <Header/>
+
           {/* <!--Start Book Intro--> */}
     <div className="book-intro bg-ligh-blue">
         <div className="container">

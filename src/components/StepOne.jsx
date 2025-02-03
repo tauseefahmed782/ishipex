@@ -1,11 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import { Modal, Tab, Tabs, Form, Button } from "react-bootstrap";
 import Login from "./Login"; // Import your Login component
 import StepTwo from "./StepTwo"; // Import your StepTwo component
+import Register from "./Register";
+import { MdClose } from "react-icons/md"; // Import a custom icon from react-icons
+
 
 const StepOne = ({ nextStep, handlePickUpForm, handleDropOffForm }) => {
   const [primaryPhone, setPrimaryPhone] = useState("");
+  const [activeTab, setActiveTab] = useState("login");
+  const [showLoginModal, setShowLoginModal] = useState(false); // Modal state
   const [secondaryPhone, setSecondaryPhone] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -13,6 +19,7 @@ const StepOne = ({ nextStep, handlePickUpForm, handleDropOffForm }) => {
   const [showLogin, setShowLogin] = useState(false); // Control login page visibility
   const [goToStepTwo, setGoToStepTwo] = useState(false); // Control StepTwo visibility
   const [loginError, setLoginError] = useState(""); // Error message for login
+
 
   const inputRef = useRef();
   const inputDropoff = useRef();
@@ -69,15 +76,34 @@ const StepOne = ({ nextStep, handlePickUpForm, handleDropOffForm }) => {
     });
   }, []);
 
-  // Handle "Continue" button click
   const handleContinue = () => {
     if (!isLoggedIn) {
-      setShowLogin(true);
+      // If user is not logged in, show the login modal
+      setShowLoginModal(true);
     } else {
-      setGoToStepTwo(true);
+      // Proceed to the next step
+      console.log("Proceeding to the next step...");
     }
   };
+const handleClose = () => setShowLoginModal(false);
 
+
+  // Handle "Continue" button click
+//   const handleContinue = () => {
+//     if (!isLoggedIn) {
+//       setShowLogin(true);
+//     } else {
+//       setGoToStepTwo(true);
+//     }
+//   };
+const handleRegisterSuccess = () => {
+    setActiveTab("login"); // Switch to login tab
+}
+
+  const handleRegisterFailure = () => {
+    console.error("Registration failed.");
+  };
+ 
   // Handle successful login
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
@@ -102,6 +128,7 @@ const StepOne = ({ nextStep, handlePickUpForm, handleDropOffForm }) => {
   if (goToStepTwo) {
     return <StepTwo />;
   }
+
     return (
         <div>
             <div
@@ -372,6 +399,44 @@ const StepOne = ({ nextStep, handlePickUpForm, handleDropOffForm }) => {
             <button type="button" onClick={handleContinue} className="jkit-button-wrapper d-block mt-4">
                 Continue
             </button>
+            {/* Login Modal */}
+      <Modal 
+        show={showLoginModal}
+        onHide={() => setShowLoginModal(false)}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header >
+        <Modal.Title>{activeTab === "login" ? "Login" : "Signup"}</Modal.Title>
+         {/* Custom close icon */}
+          <button type="button" className="close" onClick={handleClose} aria-label="Close">
+            <MdClose size={24} />
+          </button>
+        </Modal.Header>
+        <Modal.Body>
+        <Tabs
+          activeKey={activeTab}
+          onSelect={(k) => setActiveTab(k)}
+          className="mb-3"
+        >
+          <Tab eventKey="login" title="Login">
+          <Login
+            onLoginSuccess={handleLoginSuccess}
+            onLoginFailure={handleLoginFailure}
+          />
+            </Tab>
+            <Tab eventKey="signup" title="Signup">
+            <Register
+              onRegisterSuccess={handleRegisterSuccess}
+              onRegisterFailure={handleRegisterFailure}
+            />
+            </Tab>
+            </Tabs>
+
+          
+        </Modal.Body>
+
+      </Modal>  
         </div>
     )
 }
