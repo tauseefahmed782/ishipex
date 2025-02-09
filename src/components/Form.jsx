@@ -3,7 +3,7 @@ import StepOne from './StepOne';
 import StepTwo from './StepTwo';
 import PaymentModal from './PaymentModal';
 
-const Form = () => {
+const Form = ({isLoggedIn,setIsLoggedIn}) => {
     const [currentStep, setCurrentStep] = useState(1);
     const [inputs, setInputs] = useState({});
     const [dropInputs, setDropInputs] = useState({});
@@ -119,6 +119,8 @@ const Form = () => {
                         nextStep={nextStep}
                         handlePickUpForm={handlePickUpForm}
                         handleDropOffForm={handleDropOffForm}
+                        isLoggedIn={isLoggedIn}
+                        setIsLoggedIn={setIsLoggedIn}
                         
                     />
                 )}

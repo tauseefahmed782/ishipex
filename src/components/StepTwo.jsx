@@ -17,6 +17,7 @@ const StepTwo = ({ prevStep, setFormData, formData, handleSubmit, handleVehicleF
                 const response = await fetch('https://admin.beingmotherstore.com/parc_api/vehiclelist.php');
                 const data = await response.json();
                 if (data.ResponseCode === '200' && data.Result === 'true') {
+                    console.log("");
                     setVehicles(data.Vehiclelist);
                 } else {
                     console.error('Failed to fetch vehicles:', data.ResponseMsg);

@@ -13,7 +13,7 @@ const Login = ({ onLoginSuccess, onLoginFailure }) => {
 
   useEffect(() => {
     // Check if user is already logged in
-    const storedToken = localStorage.getItem("authToken");
+    const storedToken = localStorage.getItem("id");
     const storedPhone = localStorage.getItem("phoneNumber");
 
     if (storedToken && storedPhone) {
@@ -50,15 +50,15 @@ const Login = ({ onLoginSuccess, onLoginFailure }) => {
 
       // Handle the response from the API
       if (response.data.ResponseCode === "200") {
-        const { ccode, mobile, authToken } = response.data.UserLogin;
+        const { ccode, mobile, id } = response.data.UserLogin;
         const fullPhoneNumber = `${ccode}${mobile}`; // Concatenate country code and mobile number
 
         // Save user data in localStorage
-        localStorage.setItem("authToken", authToken); // Save token
+        localStorage.setItem("id", id); // Save token
         localStorage.setItem("phoneNumber", fullPhoneNumber); // Save phone number
 
         // Pass full phone number and token on login success
-        onLoginSuccess({ token: authToken, fullPhoneNumber });
+        onLoginSuccess({ token: id, fullPhoneNumber });
       } else {
         setError(response.data.ResponseMsg || "Invalid login credentials");
         onLoginFailure(response.data.ResponseMsg || "Invalid login credentials");

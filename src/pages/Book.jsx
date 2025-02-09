@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import box from '../assets/images/box.png'
 import headerImg from '../assets/images/rb_6333.png'
 import bike from '../assets/images/delivery-bike.png'
@@ -6,13 +6,55 @@ import van from '../assets/images/delivery-van.png'
 import Form from '../components/Form'
 import PaymentModal from '../components/PaymentModal'
 import Header from '../components/Header'
+import { Link, useNavigate } from "react-router-dom"; // Importing useNavigate
 
 export const Book = () => {
     const [isModalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState({}); 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState(""); // To store user's name
+  const [userEmail, setUserEmail] = useState(""); // To store user's email
+  const [userPhone, setUserPhone] = useState(""); // To store user's phone
+  const navigate = useNavigate(); // Using useNavigate hook for navigation
+
+  useEffect(() => {
+    // Check if the user is logged in by checking localStorage for the auth token
+    const id = localStorage.getItem("id");
+    console.log("auth",id);
+    if (id) {
+      setIsLoggedIn(true);
+      // You can use your API to get user profile details here if needed
+      const userName = localStorage.getItem("userName");
+      const userEmail = localStorage.getItem("userEmail");
+      const userPhone = localStorage.getItem("userPhone");
+      setUserName(userName);
+      setUserEmail(userEmail);
+      setUserPhone(userPhone);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [isLoggedIn]);
+
+  const handleLogout = () => {
+    // Clear the auth token and redirect to the login page
+    localStorage.removeItem("id");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userPhone");
+    setIsLoggedIn(false);
+
+    navigate(""); // Use navigate to redirect to the login page
+  };
+
+
+
   return (
     <div>
-            <Header/>
+            <Header isLoggedIn={isLoggedIn}
+                    handleLogout={handleLogout}
+                    setIsLoggedIn={setIsLoggedIn}
+                    userName={userName}
+              />
 
           {/* <!--Start Book Intro--> */}
     <div className="book-intro bg-ligh-blue">
@@ -41,7 +83,7 @@ export const Book = () => {
                     <div className="col-md-8">
                         <div>
                             <h2>Send Packages in Dubai, Abu Dhabi, Sharjah, Ajman, Al Ain & Ras Al-Khaimah</h2>
-<Form  setModalOpen={setModalOpen} setFormData={setFormData}  />
+<Form  setModalOpen={setModalOpen} setFormData={setFormData}  isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
                         
                         </div>
                     </div>
