@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import StepOne from './StepOne';
 import StepTwo from './StepTwo';
 import PaymentModal from './PaymentModal';
 
-const Form = ({isLoggedIn,setIsLoggedIn}) => {
+const Form = ({isLoggedIn,setIsLoggedIn,showLoginModal,setShowLoginModal}) => {
     const [currentStep, setCurrentStep] = useState(1);
     const [inputs, setInputs] = useState({});
     const [dropInputs, setDropInputs] = useState({});
     const [vehicleInputs, setVehicleInputs] = useState({});
     const [showModal, setShowModal] = useState(false);
 
+    useEffect(()=>{
+        if(isLoggedIn){
+            setCurrentStep(currentStep)
+        }else{
+            setCurrentStep(1)
+        }
+      
+    },[isLoggedIn]);
     // Handles input changes for Pickup Details
     const handlePickUpForm = (event) => {
         const { name, value } = event.target;
@@ -114,24 +122,23 @@ const Form = ({isLoggedIn,setIsLoggedIn}) => {
                     setShowModal(true); // Show modal before final submission
                 }}
             >
-                {currentStep === 1 && (
+                {currentStep == 1 ? (
                     <StepOne
                         nextStep={nextStep}
                         handlePickUpForm={handlePickUpForm}
                         handleDropOffForm={handleDropOffForm}
                         isLoggedIn={isLoggedIn}
                         setIsLoggedIn={setIsLoggedIn}
+                        showLoginModal={showLoginModal}
+                        setShowLoginModal={setShowLoginModal}
                         
                     />
-                )}
-                {currentStep === 2 && (
-                    <StepTwo
-                        prevStep={prevStep}
-                        handleVehicleForm={handleVehicleForm}
-                        handleConfirm={handleConfirm}
-                        
-                    />
-                )}
+                ):<StepTwo
+                prevStep={prevStep}
+                handleVehicleForm={handleVehicleForm}
+                handleConfirm={handleConfirm}
+                
+            />}
             </form>
 
             {/* Payment Modal */}

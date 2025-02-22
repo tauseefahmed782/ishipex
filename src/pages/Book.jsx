@@ -16,6 +16,7 @@ export const Book = () => {
   const [userEmail, setUserEmail] = useState(""); // To store user's email
   const [userPhone, setUserPhone] = useState(""); // To store user's phone
   const navigate = useNavigate(); // Using useNavigate hook for navigation
+  const [showLoginModal, setShowLoginModal] = useState(false); // Modal state
 
   useEffect(() => {
     // Check if the user is logged in by checking localStorage for the auth token
@@ -54,6 +55,8 @@ export const Book = () => {
                     handleLogout={handleLogout}
                     setIsLoggedIn={setIsLoggedIn}
                     userName={userName}
+                    showLoginModal={showLoginModal}
+setShowLoginModal={setShowLoginModal}
               />
 
           {/* <!--Start Book Intro--> */}
@@ -83,7 +86,13 @@ export const Book = () => {
                     <div className="col-md-8">
                         <div>
                             <h2>Send Packages in Dubai, Abu Dhabi, Sharjah, Ajman, Al Ain & Ras Al-Khaimah</h2>
-<Form  setModalOpen={setModalOpen} setFormData={setFormData}  isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
+<Form  setModalOpen={setModalOpen}
+ setFormData={setFormData} 
+isLoggedIn={isLoggedIn}
+setIsLoggedIn={setIsLoggedIn}
+showLoginModal={showLoginModal}
+setShowLoginModal={setShowLoginModal}
+/>
                         
                         </div>
                     </div>

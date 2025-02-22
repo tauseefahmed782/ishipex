@@ -8,10 +8,9 @@ import Register from "./Register";
 import { MdClose } from "react-icons/md"; // Import a custom icon from react-icons
 
 
-const StepOne = ({ nextStep, handlePickUpForm, handleDropOffForm,isLoggedIn,setIsLoggedIn }) => {
+const StepOne = ({ nextStep, handlePickUpForm, handleDropOffForm,isLoggedIn,setIsLoggedIn,showLoginModal,setShowLoginModal }) => {
   const [primaryPhone, setPrimaryPhone] = useState("");
   const [activeTab, setActiveTab] = useState("login");
-  const [showLoginModal, setShowLoginModal] = useState(false); // Modal state
   const [secondaryPhone, setSecondaryPhone] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);

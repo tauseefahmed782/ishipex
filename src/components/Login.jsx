@@ -56,7 +56,6 @@ const Login = ({ onLoginSuccess, onLoginFailure }) => {
         // Save user data in localStorage
         localStorage.setItem("id", id); // Save token
         localStorage.setItem("phoneNumber", fullPhoneNumber); // Save phone number
-
         // Pass full phone number and token on login success
         onLoginSuccess({ token: id, fullPhoneNumber });
       } else {
